@@ -1,0 +1,66 @@
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, View} from "react-native";
+import { useState } from "react";
+
+import ImageViewer from '../components/ImageViewer';
+import Button from '../components/Button';
+import * as ImagePicker from 'expo-image-picker'
+
+
+const PlaceholderImage = require(".././assets/images/background-image.png");
+
+export default function App() {
+  
+  // Creates a state variable that will hold the value of selected image.
+  const [selectedImage, setSelectedImage] = useState(null)
+
+  // defining our pickImage functionality
+  // allows user to pick an image from library, crop, and return
+  const pickImageAsync = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setSelectedImage(result.assets[0].uri);
+    } else {
+      alert('You did not select any image.');
+    }
+  };
+
+  // MAIN UI
+  // generates the image and two buttons
+  return (
+    <View style={styles.container}>
+      <View style={styles.imageContainer}>
+        <ImageViewer
+          placeholderImageSource={PlaceholderImage}
+          selectedImage={selectedImage}
+        />
+      </View>
+      <View style={styles.footerContainer}>
+        <Button theme="primary" label="Choose a photo" onPress={pickImageAsync} />
+        <Button label="Use this photo" />
+      </View>
+      <StatusBar style="auto" />
+    </View>
+  );
+}
+
+// stylesheet, for us to call when styling elements in main body
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#25292e',
+    alignItems: 'center',
+  },
+  imageContainer: {
+    flex: 1,
+    paddingTop: 58,
+  },
+  footerContainer: {
+    flex: 1 / 3,
+    alignitems: 'center',
+  },
+});
