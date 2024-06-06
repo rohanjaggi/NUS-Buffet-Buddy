@@ -25,25 +25,9 @@ const Login = ({ navigation }) => {
     }
   }
 
-  // for sign-up
-  const signUp = async () => {
-    setLoading(true);
-    try {
-      const response = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(response);
-      alert('Thank you!');
-      router.push("List")
-    } catch (error: any) {
-      console.log(error);
-      alert('Sign up failed: ' + error.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Login or Create an Account</Text>
+      <Text style={styles.text}>Login.</Text>
       <KeyboardAvoidingView behavior="padding">
         <TextInput value={email} style={styles.input} placeholder="Email" autoCapitalize='none' 
         onChangeText={(text) => setEmail(text)}>
@@ -57,7 +41,6 @@ const Login = ({ navigation }) => {
         ) : (
           <>
             <Button title="Login" onPress={signIn} />
-            <Button title="Create Account" onPress={signUp} />
           </>
         )}
       </KeyboardAvoidingView>
@@ -86,6 +69,5 @@ const styles = StyleSheet.create({
     fontSize: 30,  // Optional: Set the font size
     fontFamily: 'System',
     fontWeight: 'bold',
-    textAlign: 'center'
   }
 });

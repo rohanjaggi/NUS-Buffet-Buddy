@@ -1,60 +1,33 @@
 import { View, Text, StyleSheet, Button, Pressable} from "react-native"
 import { Link, router } from 'expo-router';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Login from './(login)/Login'; // Update the path as necessary
+import Login from './(login)/Login';
+import CreateAccount from "./(login)/CreateAccount";
+import BuffetListings from "./buffetListings";
+import HomePage from "./Home";
+import List from "./(login)/List";
 
 const Stack = createNativeStackNavigator();
 
 function App() {
   return (
-      <Stack.Navigator initialRouteName="Home">
+    <NavigationContainer independent={true}>
+      <Stack.Navigator initialRouteName="Home" screenOptions={ {headerShown: null} }>
+        <Stack.Screen name="Home" component={HomePage} />
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Create Account" component={CreateAccount} />
+        <Stack.Screen name="List" component={List} />
+        <Stack.Screen name="BuffetListings" component={BuffetListings} />
       </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
-const HomePage = () => {
-  const navigation = useNavigation();
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Welcome to NUS Buffet Buddy!</Text>
-      <Pressable onPress={() => router.push("Login")}>
-        <Text style={styles.link}>
-          Login
-        </Text>
-      </Pressable>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#001a4d', // Optional: Set the background color for the container
-  },
-  text: {
-    color: '#fff', // White color for the text
-    fontSize: 32,  // Optional: Set the font size
-    fontFamily: 'System',
-    fontWeight: 'bold',
-    textAlign: 'center'
-  },
-  link: {
-    color: '#ff9900', // White color for the text
-    fontSize: 24,  // Optional: Set the font size
-    fontFamily: 'System',
-    textDecorationLine: 'underline', // Underline the text
-  }
-});
-
-export default HomePage
+export default App;
 
 
 /*
