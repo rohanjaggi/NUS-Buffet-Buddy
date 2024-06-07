@@ -1,8 +1,8 @@
 import { FIREBASE_AUTH } from '../../firebase/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, ActivityIndicator, Button, KeyboardAvoidingView } from 'react-native';
-import { Link, router } from 'expo-router';
+import { View, Text, StyleSheet, TextInput, ActivityIndicator, Button, KeyboardAvoidingView, Image } from 'react-native';
+import sign from '../../assets/sign.png';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('')
@@ -16,7 +16,7 @@ const Login = ({ navigation }) => {
     try { 
       const response = await signInWithEmailAndPassword(auth, email, password);
       console.log(response);
-      router.push("List")
+      navigation.navigate('List', { userId: response.user.uid });
     } catch (error: any) {
       console.log(error);
       alert('Sign in failed: ' + error.message);
@@ -27,6 +27,9 @@ const Login = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.logoContainer}>
+        <Image source={sign} style={styles.logo} />
+      </View>
       <Text style={styles.text}>Login.</Text>
       <KeyboardAvoidingView behavior="padding">
         <TextInput value={email} style={styles.input} placeholder="Email" autoCapitalize='none' 
@@ -54,7 +57,12 @@ const styles = StyleSheet.create({
   container: {
     marginHorizontal: 20,
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    paddingBottom: 100
+  },
+  logoContainer: {
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   input: {
     marginVertical: 4,
@@ -69,5 +77,10 @@ const styles = StyleSheet.create({
     fontSize: 30,  // Optional: Set the font size
     fontFamily: 'System',
     fontWeight: 'bold',
+  },
+  logo: {
+    width: 200,
+    height: 150,
+    marginBottom: 20,
   }
 });

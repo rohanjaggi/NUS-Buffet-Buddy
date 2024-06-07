@@ -2,8 +2,9 @@ import { FIREBASE_AUTH, FIREBASE_DB } from '../../firebase/firebase';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, ActivityIndicator, Button, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, ActivityIndicator, Button, KeyboardAvoidingView, Image } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
+import sign from '../../assets/sign.png';
 
 const CreateAccount = ({ navigation }) => {
     const [name, setName] = useState('');
@@ -33,7 +34,7 @@ const CreateAccount = ({ navigation }) => {
 
             console.log(response);
             alert('Thank you!');
-            navigation.navigate('List');
+            navigation.navigate('List', { userId: response.user.uid });
         } catch (error) {
             console.log(error);
             alert('Sign up failed: ' + error.message);
@@ -44,6 +45,9 @@ const CreateAccount = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            <View style={styles.logoContainer}>
+                <Image source={sign} style={styles.logo} />
+            </View>
             <Text style={styles.text}>Create an Account.</Text>
             <KeyboardAvoidingView behavior="padding">
                 <TextInput
@@ -95,7 +99,12 @@ const styles = StyleSheet.create({
     container: {
         marginHorizontal: 20,
         flex: 1,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        paddingBottom: 70
+    },
+    logoContainer: {
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     input: {
         marginVertical: 4,
@@ -103,12 +112,17 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 4,
         padding: 10,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
     },
     text: {
         color: '#00008b',
         fontSize: 30,
         fontFamily: 'System',
         fontWeight: 'bold'
-    }
+    },
+    logo: {
+        width: 200,
+        height: 150,
+        marginBottom: 20,
+      }
 });

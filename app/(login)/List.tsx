@@ -1,9 +1,12 @@
 import { FIREBASE_AUTH } from '../../firebase/firebase';
 import { signOut } from 'firebase/auth';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { View, Text, Button, Pressable, StyleSheet } from 'react-native';
-import { router, Link } from 'expo-router';
+import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Pressable, StyleSheet, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { Link } from 'expo-router';
+import { FIREBASE_DB } from '../../firebase/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import sign from '../../assets/sign.png';
 
 interface RouterProps {
     navigation: NavigationProp<any, any>;
@@ -22,9 +25,31 @@ const handleLogout = async () => {
 
 
 const List = ({ navigation }: RouterProps) => {
+  // add the ability to show username upon successful login
+  const route = useRoute();
+  const { userId } = route.params; // not sure why it is underlined red
+
+  const [userName, setUserName] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      try {
+        const userDoc = await getDoc(doc(FIREBASE_DB, 'users', userId));
+        setUserName(userDoc.data().name);
+      } catch (error: any) {
+        console.error('Error fetching username', error); //catch any errors
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUserName();
+  }, [userId]);
+
   return (
   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-
+    <Image source={sign} style={styles.logo} />
+    {userName ? <Text style={styles.welcome}>Welcome, {userName}!</Text> : null}
     <Link href="../buffetListings" asChild>
       <Pressable>
         <Text style={styles.link}>Open Listings</Text>
@@ -54,6 +79,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#001a4d', // Optional: Set the background color for the container
+    paddingBottom: 100
   },
   text: {
     color: '#fff', // White color for the text
@@ -62,9 +88,22 @@ const styles = StyleSheet.create({
   },
   link: {
     color: '#ff9900', // bright orange color 
-    fontSize: 18,  // Optional: Set the font size
+    fontSize: 24,  // Optional: Set the font size
     fontFamily: 'System',
     textDecorationLine: 'underline', // Underline the text
+  },
+  welcome: {
+    color: '#00008b',
+    fontSize: 32,
+    textAlign: 'center',
+    marginBottom: 20,
+    fontFamily: 'System',
+    fontWeight: 'bold'
+  },
+  logo: {
+    width: 200,
+    height: 150,
+    marginBottom: 20,
   }
 });
 

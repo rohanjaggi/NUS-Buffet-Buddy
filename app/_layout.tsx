@@ -1,4 +1,5 @@
 import { Stack } from "expo-router";
+import List from "./(login)/List";
 
 const RootLayout = () => {
   return (
@@ -41,7 +42,20 @@ const RootLayout = () => {
       />
 
       <Stack.Screen
-        name="/(login)/Login"
+        name="./(login)/Login"
+        options={{
+          headerTitle: "Login Page",
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: "#001a4d"
+          },
+          headerTitleAlign: 'center', // Center the header title
+          headerTintColor: '#fff' // Set the title color to white
+        }}
+      />
+
+<Stack.Screen
+        name="./(login)/List"
         options={{
           headerTitle: "Login Page",
           headerShown: false,
