@@ -12,17 +12,6 @@ interface RouterProps {
     navigation: NavigationProp<any, any>;
 }
 
-const handleLogout = async () => {
-  try {
-    await FIREBASE_AUTH.signOut();
-    // Navigate to the login screen if needed
-    // For example:
-    // navigation.navigate('Login');
-  } catch (error) {
-    console.error("Error signing out: ", error);
-  }
-};
-
 
 const List = ({ navigation }: RouterProps) => {
   // add the ability to show username upon successful login
@@ -46,23 +35,30 @@ const List = ({ navigation }: RouterProps) => {
     fetchUserName();
   }, [userId]);
 
+  const handleLogout = async () => {
+    try {
+      await FIREBASE_AUTH.signOut();
+      navigation.navigate('Login');
+      // Navigate to the login screen if needed
+      // For example:
+      // navigation.navigate('Login');
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
+
   return (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+  <View style={styles.container} >
     <Image source={sign} style={styles.logo} />
     {userName ? <Text style={styles.welcome}>Welcome, {userName}!</Text> : null}
-    <Link href="../buffetListings" asChild>
-      <Pressable>
-        <Text style={styles.link}>Open Listings</Text>
-      </Pressable>
-    </Link>
-    {/* <Button onPress= {() => navigation.navigate('BuffetListings')} title="Open Listings" /> */}
 
+    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BuffetListings')}>
+      <Text style={styles.link}>Open Listings</Text>
+    </TouchableOpacity>
 
-    <Link href="/Login" asChild>
-      <Pressable onPress={handleLogout}>
-        <Text style={styles.link}>Log Out</Text>
-      </Pressable>
-    </Link>
+    <TouchableOpacity style={styles.button} onPress={handleLogout}>
+      <Text style={styles.link}>Log Out</Text>
+    </TouchableOpacity>
     {/* <Button onPress={() => {
       navigation.navigate('Login');
       FIREBASE_AUTH.signOut();}}
@@ -79,7 +75,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#001a4d', // Optional: Set the background color for the container
-    paddingBottom: 100
+    paddingBottom: 100,
   },
   text: {
     color: '#fff', // White color for the text
@@ -87,13 +83,14 @@ const styles = StyleSheet.create({
     fontFamily: 'System',
   },
   link: {
-    color: '#ff9900', // bright orange color 
+    color: '#fff', // bright orange color 
     fontSize: 24,  // Optional: Set the font size
     fontFamily: 'System',
-    textDecorationLine: 'underline', // Underline the text
+    textAlign: 'center',
+    fontWeight: 'bold'
   },
   welcome: {
-    color: '#00008b',
+    color: '#fff',
     fontSize: 32,
     textAlign: 'center',
     marginBottom: 20,
@@ -104,7 +101,16 @@ const styles = StyleSheet.create({
     width: 200,
     height: 150,
     marginBottom: 20,
-  }
+  },
+  button: {
+    backgroundColor: '#ff9900',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginVertical: 10,
+    width: 250,
+    textAlign: 'center'
+}
 });
 
 export default List;

@@ -7,8 +7,10 @@ import List from "./List";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { FIREBASE_AUTH } from "../../firebase/firebase";
-import BuffetListings from "../buffetListings";
+import BuffetListings from "../(buffetListings)/buffetListings";
 import CreateAccount from "./CreateAccount";
+import React from "react";
+import BuffetListingsTabs from "../(buffetListings)/buffetTabs";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,8 +19,10 @@ const InsideStack = createNativeStackNavigator();
 function InsideLayout() {
   return (
     <InsideStack.Navigator screenOptions={ {headerShown: null} }>
-      <InsideStack.Screen name="List" component={List} />
-      <InsideStack.Screen name="BuffetListings" component={BuffetListings} />
+      {/* <InsideStack.Screen name="List" component={List} />
+      <InsideStack.Screen name="BuffetListings" component={BuffetListings} /> */}
+      <InsideStack.Screen name="List" component={List} options={{ headerShown: false }} />
+      <InsideStack.Screen name="BuffetListings" component={BuffetListingsTabs} />
     </InsideStack.Navigator>
   );
 }
@@ -38,10 +42,10 @@ export default function index() {
       <Stack.Navigator initialRouteName="Login" screenOptions={ {headerShown: null} }>  
         <Stack.Screen name='CA' component={CreateAccount} options={{ headerShown: false }} />
         {user ? (
-          <Stack.Screen name='Inside' component={InsideLayout} options={{ headerShown: false }} />
-        ) : (
-          <Stack.Screen name='Login' component={Login} options={{ headerShown: false }} />
-        )}
+              <Stack.Screen name='Inside' component={InsideLayout} options={{ headerShown: false }} />
+            ) : (
+              <Stack.Screen name='Login' component={Login} options={{ headerShown: false }} />
+            )}
       </Stack.Navigator>
     </NavigationContainer>
   );

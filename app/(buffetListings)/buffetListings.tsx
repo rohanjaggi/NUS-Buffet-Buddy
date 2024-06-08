@@ -1,4 +1,6 @@
 import { Link } from "expo-router";
+// import React = require("react");
+import React from 'react';
 import { View, Text, StyleSheet } from "react-native"
 
 const BuffetListings = () => {
