@@ -9,7 +9,7 @@ import * as ImagePicker from 'expo-image-picker'
 
 const PlaceholderImage = require("../.././assets/images/background-image.png");
 
-export default function App() {
+export default function PhotoPicker() {
   
   // Creates a state variable that will hold the value of selected image.
   const [selectedImage, setSelectedImage] = useState(null)

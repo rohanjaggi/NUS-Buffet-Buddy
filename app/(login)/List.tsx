@@ -52,7 +52,7 @@ const List = ({ navigation }: RouterProps) => {
     <Image source={sign} style={styles.logo} />
     {userName ? <Text style={styles.welcome}>Welcome, {userName}!</Text> : null}
 
-    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BuffetListings')}>
+    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BuffetTabsLayout')}>
       <Text style={styles.link}>Open Listings</Text>
     </TouchableOpacity>
 

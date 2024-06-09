@@ -16,7 +16,10 @@ const Login = ({ navigation }) => {
     try { 
       const response = await signInWithEmailAndPassword(auth, email, password);
       console.log(response);
-      navigation.navigate('List', { userId: response.user.uid }); // Navigate to the 'Inside' navigator after login
+      navigation.navigate('InsideLayout', {
+        screen: 'List',
+        params: { userId: response.user.uid},
+      });
     } catch (error: any) {
       console.log(error);
       alert('Sign in failed: ' + error.message);
