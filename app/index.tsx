@@ -3,13 +3,15 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 
+import HomePage from "./Home";
 import Login from './(login)/Login';
 import CreateAccount from "./(login)/CreateAccount";
+import List from "./(login)/List";
 import BuffetListings from './(buffetListings)/buffetListings';
 import Photopicker from './(buffetListings)/PhotoPicker';
-import HomePage from "./Home";
-import List from "./(login)/List";
+import Profile from './(buffetListings)/profile';
 
 // Create the three separate navigators
 const Stack = createNativeStackNavigator(); // Navigator for before logging in
@@ -20,16 +22,70 @@ const Tab = createBottomTabNavigator(); // Navigator for bottom tabs in main app
 function BuffetTabsLayout() {
   return (
     <NavigationContainer independent={true}>
-      <Tab.Navigator >
-        <Tab.Screen name="BuffetListings" component={BuffetListings} options={{ title: 'Buffet Listings' }} />
-        <Tab.Screen name="Photopicker" component={Photopicker} options={{ title: 'Photo Picker' }} />
+      {/* formatting the bottoms tabs to look nice */}
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'BuffetListings') {
+              iconName = 'list-circle';
+            } else if (route.name === 'Photopicker') {
+              iconName = 'camera';
+            } else if (route.name === 'Profile') {
+              iconName = 'person-circle-outline';
+            }
+
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: '#ffae00',
+          tabBarInactiveTintColor: 'gray',
+          tabBarStyle: {
+            backgroundColor: '#001a4d',
+            paddingBottom: 10,
+            height: 80,
+          },
+          tabBarLabelStyle: {
+            fontSize: 16,
+            fontWeight: 'bold',
+            fontFamily: 'Nunito_500Medium',
+          },
+        })}
+      >
+
+        {/* Now we have our different bottom tabs */}
+        <Tab.Screen name="BuffetListings" component={BuffetListings}
+          options={{
+            title: 'Buffet Listings',
+            headerStyle: { backgroundColor: '#001a4d' },
+            headerTintColor: '#fff',
+            headerTitleStyle: { fontWeight: 'bold', fontFamily: 'Nunito_500Medium', },
+          }}
+        />
+
+        <Tab.Screen name="Photopicker" component={Photopicker}
+          options={{
+            title: 'Photo Picker',
+            headerStyle: { backgroundColor: '#001a4d' },
+            headerTintColor: '#fff',
+            headerTitleStyle: { fontWeight: 'bold', fontFamily: 'Nunito_500Medium', },
+          }}
+        />
+
+        <Tab.Screen name="Profile" component={Profile}
+          options={{
+            headerStyle: { backgroundColor: '#001a4d' },
+            headerTintColor: '#fff',
+            headerTitleStyle: { fontWeight: 'bold', fontFamily: 'Nunito_500Medium', },
+          }}
+        />
         {/* Add more screens here */}
       </Tab.Navigator>
     </NavigationContainer>
   );
 }
 
-// Navigator for after loggin in
+// Navigator for after logging in
 function InsideLayout() {
   return (
     <InsideStack.Navigator screenOptions={ {headerShown: false} }>

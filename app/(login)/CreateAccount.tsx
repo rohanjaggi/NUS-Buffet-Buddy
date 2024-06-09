@@ -113,11 +113,12 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         padding: 10,
         backgroundColor: '#fff',
+        fontFamily: 'Nunito_500Medium',
     },
     text: {
         color: '#00008b',
         fontSize: 30,
-        fontFamily: 'System',
+        fontFamily: 'Nunito_500Medium',
         fontWeight: 'bold'
     },
     logo: {

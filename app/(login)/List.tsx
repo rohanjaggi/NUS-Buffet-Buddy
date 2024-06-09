@@ -3,7 +3,6 @@ import { signOut } from 'firebase/auth';
 import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { Link } from 'expo-router';
 import { FIREBASE_DB } from '../../firebase/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import sign from '../../assets/sign.png';
@@ -80,12 +79,12 @@ const styles = StyleSheet.create({
   text: {
     color: '#fff', // White color for the text
     fontSize: 26,  // Optional: Set the font size
-    fontFamily: 'System',
+    fontFamily: 'Nunito_500Medium',
   },
   link: {
     color: '#fff', // bright orange color 
     fontSize: 24,  // Optional: Set the font size
-    fontFamily: 'System',
+    fontFamily: 'Nunito_500Medium',
     textAlign: 'center',
     fontWeight: 'bold'
   },
@@ -94,7 +93,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     textAlign: 'center',
     marginBottom: 20,
-    fontFamily: 'System',
+    fontFamily: 'Nunito_500Medium',
     fontWeight: 'bold'
   },
   logo: {
@@ -109,8 +108,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginVertical: 10,
     width: 250,
-    textAlign: 'center'
-}
+    textAlign: 'center',
+    fontFamily: 'Nunito_500Medium',
+  }
 });
 
 export default List;
