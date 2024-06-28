@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     paddingRight: 8,
   },
   buttonLabel: {
-    color: '#fff',
+    color: 'white',
     fontSize: 16,
   },
 });

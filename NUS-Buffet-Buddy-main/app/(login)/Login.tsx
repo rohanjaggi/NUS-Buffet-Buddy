@@ -16,9 +16,10 @@ const Login = ({ navigation }) => {
     try { 
       const response = await signInWithEmailAndPassword(auth, email, password);
       console.log(response);
+      const userId = response.user.uid;
       navigation.navigate('InsideLayout', {
         screen: 'List',
-        params: { userId: response.user.uid},
+        params: { userId },
       });
     } catch (error: any) {
       console.log(error);
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
     color: '#00008b', // White color for the text
     fontSize: 30,  // Optional: Set the font size
     fontFamily: 'Nunito_500Medium',
-    fontWeight: 'bold',
+    fontWeight: '900',
   },
   logo: {
     width: 200,

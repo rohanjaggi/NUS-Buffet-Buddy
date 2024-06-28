@@ -33,8 +33,12 @@ const CreateAccount = ({ navigation }) => {
             });
 
             console.log(response);
-            alert('Thank you!');
-            navigation.navigate('List', { userId: response.user.uid });
+            alert('Account Created!');
+            const userId = response.user.uid;
+            navigation.navigate('InsideLayout', {
+                screen: 'List',
+                params: { userId },
+              });
         } catch (error) {
             console.log(error);
             alert('Sign up failed: ' + error.message);

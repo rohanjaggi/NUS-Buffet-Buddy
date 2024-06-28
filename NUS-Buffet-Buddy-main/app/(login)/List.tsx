@@ -38,9 +38,6 @@ const List = ({ navigation }: RouterProps) => {
     try {
       await FIREBASE_AUTH.signOut();
       navigation.navigate('Login');
-      // Navigate to the login screen if needed
-      // For example:
-      // navigation.navigate('Login');
     } catch (error) {
       console.error("Error signing out: ", error);
     }
@@ -58,11 +55,6 @@ const List = ({ navigation }: RouterProps) => {
     <TouchableOpacity style={styles.button} onPress={handleLogout}>
       <Text style={styles.link}>Log Out</Text>
     </TouchableOpacity>
-    {/* <Button onPress={() => {
-      navigation.navigate('Login');
-      FIREBASE_AUTH.signOut();}}
-      title="Log Out"
-    /> */}
   </View>
   );
 };
