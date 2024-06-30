@@ -25,6 +25,16 @@ const CreateListings = () => {
     const [userName, setUserName] = useState('');
     const [loading, setLoading] = useState(true);
 
+    const resetFields = () => {
+        setFoodAvail('');
+        setDescription('');
+        setLocation('');
+        setClearTime(new Date());
+        setAllergens('');
+        setCutleryAvail(false);
+        setHalalCert(false);
+    };
+
     useEffect(() => {
         const getUserRole = async () => {
             try {
@@ -76,6 +86,7 @@ const CreateListings = () => {
                     userName
                 });
                 Alert.alert('Success', 'Food Listing Created!');
+                resetFields();
                 navigation.goBack();
             } catch (error) {
                 console.error('Error adding listing:', error);
@@ -99,7 +110,7 @@ const CreateListings = () => {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.container}>
-                <Text style={styles.title}>Create Listing</Text>
+                <Text style={styles.title}>Create a Listing.</Text>
                 <TouchableOpacity style={styles.picButton} onPress={() => navigation.navigate('PhotoPicker')}>
                     <Text style={styles.buttonText}>
                         Add Picture
@@ -111,7 +122,7 @@ const CreateListings = () => {
                     style={styles.input}
                     value={foodAvail}
                     onChangeText={setFoodAvail}
-                    placeholder="Food Available"
+                    placeholder="What food is available?"
                 />
 
                 <Text style={styles.label}>Description</Text>
@@ -119,7 +130,7 @@ const CreateListings = () => {
                     style={styles.input}
                     value={description}
                     onChangeText={setDescription}
-                    placeholder="Description"
+                    placeholder="Any description?"
                 />
 
                 <Text style={styles.label}>Location</Text>
@@ -127,7 +138,7 @@ const CreateListings = () => {
                     style={styles.input}
                     value={location}
                     onChangeText={setLocation}
-                    placeholder="Location"
+                    placeholder="Where is the food Available?"
                 />
 
                 <Text style={styles.label}>Allergens</Text>
@@ -135,12 +146,13 @@ const CreateListings = () => {
                     style={styles.input}
                     value={allergens}
                     onChangeText={setAllergens}
-                    placeholder="Allergens"
+                    placeholder="Are there any allergens?"
                 />
 
                 <View style={styles.switchContainer}>
                     <Text style={styles.label}>Halal Certification</Text>
                     <Switch
+                        trackColor={{ false: "#767577", true: "#81b0ff" }}
                         value={halalCert}
                         onValueChange={setHalalCert} />
                 </View>
@@ -148,6 +160,7 @@ const CreateListings = () => {
                 <View style={styles.switchContainer}>
                     <Text style={styles.label}>Cutlery Availability</Text>
                     <Switch
+                        trackColor={{ false: "#767577", true: "#81b0ff" }}
                         value={cutleryAvail}
                         onValueChange={setCutleryAvail} />
                 </View>
@@ -181,7 +194,8 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 20,
         marginBottom: 8,
-        fontWeight: 'heavy',
+        fontWeight: 'bold',
+        color: '#00008b'
     },
     input: {
         height: 40,
@@ -189,6 +203,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         marginBottom: 12,
         paddingHorizontal: 10,
+        borderRadius: 20
     },
     switchContainer: {
         flexDirection: 'row',
@@ -206,16 +221,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#ff9900',
         paddingVertical: 10,
         paddingHorizontal: 20,
-        borderRadius: 5,
+        borderRadius: 20,
         marginBottom: 20,
         width: 330,
         fontWeight: 'heavy',
         alignSelf: 'center',
     }, 
     text: {
-        color: '#fff', // White color for the text
+        color: '#fff', 
         fontSize: 20,
-        fontFamily: 'Nunito_500Medium',
         textAlign: 'center',
         fontWeight: 'bold'
       },
@@ -230,16 +244,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#00008b',
         paddingVertical: 10,
         paddingHorizontal: 10,
-        borderRadius: 5,
+        borderRadius: 20,
         marginBottom: 20,
         width: 150,
-        fontWeight: 'heavy',
+        fontWeight: 'bold',
         alignSelf: 'center',
       },
       buttonText: {
-        color: '#fff', // White color for the text
+        color: '#fff', 
         fontSize: 16,
-        fontFamily: 'Nunito_500Medium',
         textAlign: 'center',
         fontWeight: 'bold'
       }

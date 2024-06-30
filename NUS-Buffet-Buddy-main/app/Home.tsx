@@ -1,14 +1,14 @@
 import { View, Text, StyleSheet, Pressable, Image, TouchableOpacity} from "react-native"
 import { useNavigation } from '@react-navigation/native';
-import { useFonts, Nunito_500Medium } from '@expo-google-fonts/nunito';
 import React from 'react';
 import logo from '../assets/logo.png';
+import { useFonts, Rubik_400Regular } from '@expo-google-fonts/rubik';
 
 const HomePage = () => {
   const navigation = useNavigation();
 
   let [fontsLoaded] = useFonts({
-    Nunito_500Medium,
+    Rubik_400Regular,
   });
 
   if (!fontsLoaded) {
@@ -39,13 +39,13 @@ const HomePage = () => {
       justifyContent: 'center',
       alignItems: 'center',
       textAlign: 'center',
-      backgroundColor: '#001a4d' // Optional: Set the background color for the container
+      backgroundColor: '#001a4d' 
     },
     text: {
-      color: '#fff', // White color for the text
-      fontSize: 20,  // Optional: Set the font size
-      fontFamily: 'Nunito_500Medium',
+      color: '#fff', 
+      fontSize: 20,  
       textAlign: 'center',
+      fontWeight: 'bold'
     },
     logo: {
         width: 300,
@@ -56,7 +56,7 @@ const HomePage = () => {
         backgroundColor: '#ff9900',
         paddingVertical: 10,
         paddingHorizontal: 20,
-        borderRadius: 5,
+        borderRadius: 20,
         marginVertical: 10,
         width: 250,
         textAlign: 'center'

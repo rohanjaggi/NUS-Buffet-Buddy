@@ -4,11 +4,13 @@ import { initializeAuth, getAuth, getReactNativePersistence } from "firebase/aut
 import { getFirestore } from 'firebase/firestore';
 import { getDatabase } from 'firebase/database';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { Constants } from "expo-constants";
+import env from "../env";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBR7gOiFmy5cSmjRbwARZOILFjUkQoOdnY",
+  apiKey: env.FIREBASE_API_KEY,
   authDomain: "nus-buffet-buddy-1f2c4.firebaseapp.com",
   databaseURL: "https://nus-buffet-buddy-1f2c4-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "nus-buffet-buddy-1f2c4",

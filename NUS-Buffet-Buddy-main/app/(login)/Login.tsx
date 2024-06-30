@@ -72,16 +72,15 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     height : 50,
     borderWidth: 1,
-    borderRadius: 4,
+    borderRadius: 20,
     padding: 10,
     backgroundColor: '#fff',
-    fontFamily: 'Nunito_500Medium',
+    fontFamily: 'Rubik_400Regular',
   },
   text: {
-    color: '#00008b', // White color for the text
-    fontSize: 30,  // Optional: Set the font size
-    fontFamily: 'Nunito_500Medium',
-    fontWeight: '900',
+    color: '#00008b', 
+    fontSize: 30,  
+    fontWeight: 'bold',
   },
   logo: {
     width: 200,

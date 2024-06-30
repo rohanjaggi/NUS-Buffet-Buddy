@@ -65,18 +65,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#001a4d', // Optional: Set the background color for the container
+    backgroundColor: '#001a4d', 
     paddingBottom: 100,
   },
   text: {
-    color: '#fff', // White color for the text
-    fontSize: 26,  // Optional: Set the font size
-    fontFamily: 'Nunito_500Medium',
+    color: '#fff', 
+    fontSize: 26, 
+    fontWeight: 'bold'
   },
   link: {
-    color: '#fff', // bright orange color 
-    fontSize: 24,  // Optional: Set the font size
-    fontFamily: 'Nunito_500Medium',
+    color: '#fff', 
+    fontSize: 24,  
+
     textAlign: 'center',
     fontWeight: 'bold'
   },
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     textAlign: 'center',
     marginBottom: 20,
-    fontFamily: 'Nunito_500Medium',
+    fontFamily: 'Rubik_400Regular',
     fontWeight: 'bold'
   },
   logo: {
@@ -97,11 +97,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff9900',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 5,
+    borderRadius: 20,
     marginVertical: 10,
     width: 250,
     textAlign: 'center',
-    fontFamily: 'Nunito_500Medium',
   }
 });
 

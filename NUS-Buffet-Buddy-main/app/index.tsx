@@ -28,13 +28,13 @@ function BuffetTabsLayout({ route }) {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === 'BuffetListings') {
+          if (route.name === 'Buffet Listings') {
             iconName = 'list-circle';
-          } else if (route.name === 'Photopicker') {
+          } else if (route.name === 'Photo Picker') {
             iconName = 'camera';
           } else if (route.name === 'Profile') {
             iconName = 'person-circle-outline';
-          } else if (route.name === 'CreateListings') {
+          } else if (route.name === 'Create Listings') {
             iconName = 'add-circle'
           }
 
@@ -50,38 +50,24 @@ function BuffetTabsLayout({ route }) {
         tabBarLabelStyle: {
           fontSize: 16,
           fontWeight: 'bold',
-          fontFamily: 'Nunito_500Medium',
+          fontFamily: 'Rubik_400Regular',
         },
+        headerShown: false,
       })}
     >
 
-      <Tab.Screen name="BuffetListings" component={({ navigation, route }) => <BuffetListings navigation={navigation} route={route} />} 
-        options={{
-          title: 'Buffet Listings',
-          headerStyle: { backgroundColor: '#001a4d' },
-          headerTintColor: '#fff',
-          headerTitleStyle: { fontWeight: 'bold', fontFamily: 'Nunito_500Medium', },
-        }}
-        initialParams={{ userId }} // Pass userId to BuffetListings
-      />
+      <Tab.Screen name="Buffet Listings" initialParams={{ userId }}>
+        {({ navigation, route }) => (
+          <BuffetListings navigation={navigation} route={route} />
+        )}
+      </Tab.Screen>
 
-      <Tab.Screen name="CreateListings" component={CreateListings}
-        options={{
-          title: 'Create Listing',
-          headerStyle: { backgroundColor: '#001a4d' },
-          headerTintColor: '#fff',
-          headerTitleStyle: { fontWeight: 'bold', fontFamily: 'Nunito_500Medium', },
-        }}
-        initialParams={{ userId }} // Pass userId to Photopicker
+      <Tab.Screen name="Create Listings" component={CreateListings}
+        initialParams={{ userId }} // Pass userId to CreateListings
       />
       
       <Tab.Screen name="Profile" component={Profile}
-        options={{
-          headerStyle: { backgroundColor: '#001a4d' },
-          headerTintColor: '#fff',
-          headerTitleStyle: { fontWeight: 'bold', fontFamily: 'Nunito_500Medium', },
-        }}
-        initialParams={{ userId }} // Pass userId to Profile
+          initialParams={{ userId }} // Pass userId to Profile
       />
     </Tab.Navigator>
   );
@@ -102,7 +88,7 @@ function InsideLayout({ route }) {
           title: `Listing #${route.params.listingData.listingID}`, // Use the listingId parameter to set the title
           headerStyle: { backgroundColor: '#001a4d' },
           headerTintColor: '#fff',
-          headerTitleStyle: { fontWeight: 'bold', fontFamily: 'Nunito_500Medium', },
+          headerTitleStyle: { fontWeight: 'bold', fontFamily: 'Rubik_400Regular', },
         })}  
       />
       <InsideStack.Screen name="PhotoPicker" component={PhotoPicker} 

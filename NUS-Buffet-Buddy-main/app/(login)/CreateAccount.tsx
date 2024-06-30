@@ -114,15 +114,14 @@ const styles = StyleSheet.create({
         marginVertical: 4,
         height: 50,
         borderWidth: 1,
-        borderRadius: 4,
+        borderRadius: 20,
         padding: 10,
         backgroundColor: '#fff',
-        fontFamily: 'Nunito_500Medium',
+        fontFamily: 'Rubik_400Regular',
     },
     text: {
         color: '#00008b',
         fontSize: 30,
-        fontFamily: 'Nunito_500Medium',
         fontWeight: 'bold'
     },
     logo: {

@@ -1,15 +1,15 @@
 import { FIREBASE_AUTH } from '../../firebase/firebase';
 import { signOut } from 'firebase/auth';
-import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { FIREBASE_DB } from '../../firebase/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import profilePic from '../../assets/profilePic.png';
 
 const Profile = () => {
-  const navigation = useNavigation(); // Get the navigation object
+  const navigation = useNavigation(); 
   const currentUser = getAuth().currentUser;
 
   const [name, setName] = useState('');
@@ -46,7 +46,10 @@ const Profile = () => {
   const handleLogout = async () => {
     try {
       await FIREBASE_AUTH.signOut();
-      navigation.navigate('Login')
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
     } catch (error) {
       console.error("Error signing out: ", error);
     }
@@ -54,6 +57,7 @@ const Profile = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Profile.</Text>
       <Image source={profilePic} style={styles.profileImage} />
       <Text style={styles.label}>Name:</Text>
       <Text style={styles.text}>{name}</Text>
@@ -67,20 +71,20 @@ const Profile = () => {
        </TouchableOpacity>
       </View>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#fff', // Optional: Set the background color for the container
+    backgroundColor: '#fff', 
   },
   logOutContainer: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: '#fff', // Optional: Set the background color for the container
+    backgroundColor: '#fff', 
   },
   profileImage: {
     width: 150,
@@ -89,19 +93,19 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 40,
     borderWidth: 2,
-    color: '#001a4d',
+    color: '#00008b',
   },
   buttonText: {
     color: '#001a4d',
-    fontSize: 20,  // Optional: Set the font size
-    fontFamily: 'Nunito_500Medium',
+    fontSize: 20, 
+    fontFamily: 'Rubik_400Regular',
     textAlign: 'center',
   },
   button: {
     backgroundColor: '#ff9900',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 5,
+    borderRadius: 20,
     marginVertical: 10,
     width: 250,
     textAlign: 'center'
@@ -111,13 +115,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 20,
     textAlign: 'center', 
+    color:'#00008b'
   },
   text: {
     fontSize: 16,
     marginBottom: 10,
     textAlign: 'center', 
-  }
+  },
+  title: {
+    fontSize: 42,
+    fontWeight: 'bold',
+    marginTop: 15,
+    marginBottom: 10,
+    color: '#00008b',
+    textAlign: 'center',
+  },
 });
 
-
-export default Profile
+export default Profile;

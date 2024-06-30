@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     color: '#001a4d'
   },
   commentsScroll: {
-    maxHeight: 200, // Max height for the comments section
+    maxHeight: 200,
   },
   commentContainer: {
     marginVertical: 5,
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderColor: 'gray',
     borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 20,
     paddingHorizontal: 10,
     marginRight: 10,
     padding: 10
