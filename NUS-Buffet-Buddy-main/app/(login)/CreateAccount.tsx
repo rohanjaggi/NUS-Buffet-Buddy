@@ -90,7 +90,7 @@ const CreateAccount = ({ navigation }) => {
                 {loading ? (
                     <ActivityIndicator size="large" color="#0000ff" />
                 ) : (
-                    <Button title="Create Account" onPress={signUp} />
+                    <Button style={{ padding: 20 }} title="Create Account" onPress={signUp} />
                 )}
             </KeyboardAvoidingView>
         </View>

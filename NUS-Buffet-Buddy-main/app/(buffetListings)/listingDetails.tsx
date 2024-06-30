@@ -24,7 +24,7 @@ const ListingDetails = ({ route, navigation }) => {
     const date = new Date(isoString);
     const formattedDate = date.toLocaleDateString();
     const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    return `${formattedDate} ${formattedTime}`;
+    return `${formattedTime} ${formattedDate}`;
   };
 
   const addComment = async () => {
@@ -61,7 +61,7 @@ const ListingDetails = ({ route, navigation }) => {
 
             <View style={styles.picContainer}>
               <Image
-                source={require('../../assets/images/test_picture.jpg')}
+                source={require('../../assets/images/emoji5.png')}
                 style={{ width: 200, height: 200 }}
               />
             </View>
