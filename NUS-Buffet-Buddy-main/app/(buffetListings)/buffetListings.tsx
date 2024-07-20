@@ -30,6 +30,7 @@ const BuffetListings = ({ navigation }) => {
 
   const filterListings = (listings) => {
     return listings.filter(item => (
+      item.isActive !== false && 
       (!searchText || 
         item.description.toLowerCase().includes(searchText.toLowerCase()) || 
         item.foodAvail.toLowerCase().includes(searchText.toLowerCase()) ||

@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, Button, FlatList, ScrollView } from 'react-native';
-import { ref, onValue, push, set } from 'firebase/database';
+import { View, Text, StyleSheet, Image, TextInput, Button, FlatList, ScrollView, Switch } from 'react-native';
+import { ref, onValue, push, set, update } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 import { FIREBASE_RDB } from '../../firebase/firebase';
 
 const ListingDetails = ({ route, navigation }) => {
-  const { listingId } = route.params; // access the listingId parameter
-  const [listingData, setListingData] = useState({}); // initialize an empty object to store the listing data
-  const [comments, setComments] = useState([]); // state to store comments
-  const [newComment, setNewComment] = useState(''); // state to store new comment text
+  const { listingId } = route.params;
+  const [listingData, setListingData] = useState({});
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
+  const [isActive, setIsActive] = useState(true);
   const currentUser = getAuth().currentUser;
 
   useEffect(() => {
-    const listingRef = ref(FIREBASE_RDB, `foodListings/${listingId}`); // create a reference to the listing node
+    const listingRef = ref(FIREBASE_RDB, `foodListings/${listingId}`);
     onValue(listingRef, (snapshot) => {
-      const data = snapshot.val(); // get the data from the snapshot
-      setListingData(data); // update the state with the listing data
-      setComments(data.comments ? Object.entries(data.comments).map(([key, value]) => ({ id: key, ...value })) : []); // fetch comments
+      const data = snapshot.val();
+      setListingData(data);
+      setComments(data.comments ? Object.entries(data.comments).map(([key, value]) => ({ id: key, ...value })) : []);
+      setIsActive(data.isActive !== undefined ? data.isActive : true);
     });
-  }, [listingId]); // re-run the effect when listingId changes
+  }, [listingId]);
 
   const formatDateTime = (isoString) => {
     const date = new Date(isoString);
@@ -31,18 +33,26 @@ const ListingDetails = ({ route, navigation }) => {
     if (newComment.trim() === '') {
       return;
     }
-    
+
+    const isOrganiser = currentUser.uid === listingData.userId;
+
     const commentsRef = ref(FIREBASE_RDB, `foodListings/${listingId}/comments`);
     const newCommentRef = push(commentsRef);
     const commentData = {
       userId: currentUser.uid,
-      userName: currentUser.displayName,
+      userName: currentUser.displayName + (isOrganiser ? ' (organiser)' : ''),
       text: newComment,
       timestamp: new Date().toISOString()
     };
 
     await set(newCommentRef, commentData);
     setNewComment('');
+  };
+
+  const toggleActiveStatus = async () => {
+    const newStatus = !isActive;
+    setIsActive(newStatus);
+    await update(ref(FIREBASE_RDB, `foodListings/${listingId}`), { isActive: newStatus });
   };
 
   return (
@@ -60,10 +70,19 @@ const ListingDetails = ({ route, navigation }) => {
             </View>
 
             <View style={styles.picContainer}>
-              <Image
-                source={require('../../assets/images/emoji5.png')}
-                style={{ width: 200, height: 200 }}
-              />
+              {listingData.imageURL ? (
+                <>
+                  <Image
+                    source={{ uri: listingData.imageURL }}
+                    style={{ width: 200, height: 200, borderWidth: 2, borderColor: '#000' }}
+                  />
+                </>
+              ) : (
+                <Image
+                  source={require('../../assets/images/emoji5.png')}
+                  style={{ width: 200, height: 200, borderWidth: 2, borderColor: '#000' }}
+                />
+              )}
             </View>
 
             <View style={styles.bottomContainer}>
@@ -90,6 +109,17 @@ const ListingDetails = ({ route, navigation }) => {
               <Text style={styles.unbolded}>
                 <Text style={styles.listingDetails}>Posted by: </Text>{listingData.userName}
               </Text>
+
+              {currentUser.uid === listingData.userId && (
+                <View style={styles.switchContainer}>
+                  <Text style={styles.label}>Active Status</Text>
+                  <Switch
+                    trackColor={{ false: "#767577", true: "#81b0ff" }}
+                    value={isActive}
+                    onValueChange={toggleActiveStatus}
+                  />
+                </View>
+              )}
             </View>
           </>
         }
@@ -194,7 +224,18 @@ const styles = StyleSheet.create({
   },
   footerPadding: {
     height: 50,
-  }
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  label: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#00008b'
+  },
 });
 
 export default ListingDetails;

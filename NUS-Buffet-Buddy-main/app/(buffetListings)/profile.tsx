@@ -57,7 +57,10 @@ const Profile = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Profile.</Text>
+      <View style={styles.headerContainer}>
+        <Image source={require('../../assets/sign.png')} style={styles.logo} />
+        <Text style={styles.title}>Profile.</Text>
+      </View>
       <Image source={profilePic} style={styles.profileImage} />
       <Text style={styles.label}>Name:</Text>
       <Text style={styles.text}>{name}</Text>
@@ -123,13 +126,27 @@ const styles = StyleSheet.create({
     textAlign: 'center', 
   },
   title: {
-    fontSize: 42,
+    fontSize: 32,
     fontWeight: 'bold',
     marginTop: 15,
     marginBottom: 10,
-    color: '#00008b',
+    color: '#fff',
     textAlign: 'center',
   },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    backgroundColor: '#001a4d',
+    padding: 10,
+    borderRadius: 0,
+    width: '100%',
+  },
+  logo: {
+    width: 47,
+    height: 50,
+    marginRight: 10
+  }
 });
 
 export default Profile;
