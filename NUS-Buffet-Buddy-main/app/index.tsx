@@ -14,6 +14,7 @@ import Profile from './(buffetListings)/profile';
 import CreateListings from './(buffetListings)/createListings';
 import ListingDetails from './(buffetListings)/listingDetails';
 
+
 // Create the three separate navigators
 const Stack = createNativeStackNavigator(); // Navigator for before logging in
 const InsideStack = createNativeStackNavigator(); // Navigator for after logging in
@@ -104,6 +105,7 @@ function InsideLayout({ route }) {
 
 // Main App Navigator for before logging in
 function App() {
+
   return (
     <NavigationContainer independent={true}>
       <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>

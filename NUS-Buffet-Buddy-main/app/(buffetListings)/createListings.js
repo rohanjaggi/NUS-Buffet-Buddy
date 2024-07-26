@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { getDoc, doc } from 'firebase/firestore';
+import { getDocs, getDoc, doc, collection } from 'firebase/firestore';
 import { View, Text, StyleSheet, TextInput, ActivityIndicator, Button, Switch, TouchableOpacity, Alert, ScrollView, Image } from 'react-native';
 import { FIREBASE_RDB, FIREBASE_DB } from '../../firebase/firebase';
 import { ref, set, push, runTransaction } from 'firebase/database';
@@ -9,7 +9,7 @@ import { getAuth } from 'firebase/auth';
 
 const CreateListings = () => {
     const navigation = useNavigation();
-    const route = useRoute(); 
+    const route = useRoute();
     const currentUser = getAuth().currentUser;
 
     const [foodAvail, setFoodAvail] = useState('');
@@ -39,20 +39,22 @@ const CreateListings = () => {
 
     useEffect(() => {
         const getUserRole = async () => {
-            try {
-                const userDoc = await getDoc(doc(FIREBASE_DB, 'users', currentUser.uid));
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
-                    console.log('User data:', userData);
-                    setUserName(userData.name);
-                    setUserRole(userData.role);
-                } else {
-                    console.log('No user detected!');
+            if (currentUser) {
+                try {
+                    const userDoc = await getDoc(doc(FIREBASE_DB, 'users', currentUser.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        console.log('User data:', userData);
+                        setUserName(userData.name);
+                        setUserRole(userData.role);
+                    } else {
+                        console.log('No user detected!');
+                    }
+                } catch (error) {
+                    console.error('Error fetching user:', error);
+                } finally {
+                    setLoading(false);
                 }
-            } catch (error) {
-                console.error('Error fetching user:', error);
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -64,6 +66,53 @@ const CreateListings = () => {
             setImageURL(route.params.imageUrl);
         }
     }, [route.params?.imageUrl]);
+
+    // Function to send push notification
+    const sendPushNotification = async (expoPushToken) => {
+        const message = {
+            to: expoPushToken,
+            sound: 'default',
+            title: 'New Buffet Listing!',
+            body: 'Check out the new buffet listing now!',
+            data: { someData: 'goes here' },
+        };
+
+        try {
+            await fetch('https://exp.host/--/api/v2/push/send', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Accept-Encoding': 'gzip, deflate',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(message),
+            });
+        } catch (error) {
+            console.error('Error sending push notification:', error);
+        }
+    };
+
+    // Function to get all users with Expo push tokens and send notifications
+    const sendNotificationsToAllUsers = async () => {
+        try {
+            const usersCollection = collection(FIREBASE_DB, 'users');
+            const userSnapshot = await getDocs(usersCollection);
+            const expoPushTokens = [];
+
+            // collect all the push tokens for each user
+            userSnapshot.forEach((doc) => {
+                const userData = doc.data();
+                if (userData.expoPushToken) {
+                    expoPushTokens.push(userData.expoPushToken);
+                }
+            });
+
+            // then send push notifications to all users
+            await Promise.all(expoPushTokens.map((token) => sendPushNotification(token)));
+        } catch (error) {
+            console.error('Error fetching users or sending notifications:', error);
+        }
+    };
 
     const AddListing = async () => {
         if (userRole !== 'Organiser') {
@@ -95,6 +144,10 @@ const CreateListings = () => {
                     imageURL,
                     isActive: true
                 });
+
+                // Send push notifications to all users
+                await sendNotificationsToAllUsers();
+
                 Alert.alert('Success', 'Food Listing Created!');
                 resetFields();
                 navigation.goBack();
@@ -124,76 +177,76 @@ const CreateListings = () => {
                 <Text style={styles.title}>Create a Listing.</Text>
             </View>
             <View style={styles.inputContainer}>
-            <TouchableOpacity style={styles.picButton} onPress={() => navigation.navigate('PhotoPicker')}>
-                <Text style={styles.buttonText}>
-                    Add Picture
-                </Text> 
-            </TouchableOpacity>
-            {imageURL ? <Image source={{ uri: imageURL }} style={styles.previewImage} /> : null}
-            <Text style={styles.label}>Food Available</Text>
-            <TextInput
-                style={styles.input}
-                value={foodAvail}
-                onChangeText={setFoodAvail}
-                placeholder="What food is available?"
-            />
+                <TouchableOpacity style={styles.picButton} onPress={() => navigation.navigate('PhotoPicker')}>
+                    <Text style={styles.buttonText}>
+                        Add Picture
+                    </Text>
+                </TouchableOpacity>
+                {imageURL ? <Image source={{ uri: imageURL }} style={styles.previewImage} /> : null}
+                <Text style={styles.label}>Food Available</Text>
+                <TextInput
+                    style={styles.input}
+                    value={foodAvail}
+                    onChangeText={setFoodAvail}
+                    placeholder="What food is available?"
+                />
 
-            <Text style={styles.label}>Description</Text>
-            <TextInput
-                style={styles.input}
-                value={description}
-                onChangeText={setDescription}
-                placeholder="Any description?"
-            />
+                <Text style={styles.label}>Description</Text>
+                <TextInput
+                    style={styles.input}
+                    value={description}
+                    onChangeText={setDescription}
+                    placeholder="Any description?"
+                />
 
-            <Text style={styles.label}>Location</Text>
-            <TextInput
-                style={styles.input}
-                value={location}
-                onChangeText={setLocation}
-                placeholder="Where is the food Available?"
-            />
+                <Text style={styles.label}>Location</Text>
+                <TextInput
+                    style={styles.input}
+                    value={location}
+                    onChangeText={setLocation}
+                    placeholder="Where is the food Available?"
+                />
 
-            <Text style={styles.label}>Allergens</Text>
-            <TextInput
-                style={styles.input}
-                value={allergens}
-                onChangeText={setAllergens}
-                placeholder="Are there any allergens?"
-            />
+                <Text style={styles.label}>Allergens</Text>
+                <TextInput
+                    style={styles.input}
+                    value={allergens}
+                    onChangeText={setAllergens}
+                    placeholder="Are there any allergens?"
+                />
 
-            <View style={styles.switchContainer}>
-                <Text style={styles.label}>Halal Certification</Text>
-                <Switch
-                    trackColor={{ false: "#767577", true: "#81b0ff" }}
-                    value={halalCert}
-                    onValueChange={setHalalCert} />
-            </View>
-            
-            <View style={styles.switchContainer}>
-                <Text style={styles.label}>Cutlery Availability</Text>
-                <Switch
-                    trackColor={{ false: "#767577", true: "#81b0ff" }}
-                    value={cutleryAvail}
-                    onValueChange={setCutleryAvail} />
-            </View>
+                <View style={styles.switchContainer}>
+                    <Text style={styles.label}>Halal Certification</Text>
+                    <Switch
+                        trackColor={{ false: "#767577", true: "#81b0ff" }}
+                        value={halalCert}
+                        onValueChange={setHalalCert} />
+                </View>
 
-            <View style={styles.timeContainer}>
-                <Button title="Set Clear Time" onPress={() => setShowTimePicker(true)} />
-                {showTimePicker && (
-                    <DateTimePicker
-                        value={clearTime}
-                        mode="time"
-                        is24Hour={true}
-                        display="default"
-                        onChange={handleTimeChange} />
-                )}
-            </View>
-            <TouchableOpacity style={styles.button} onPress={AddListing}>
-                <Text style={styles.text}>
-                    Create Listing
-                </Text> 
-            </TouchableOpacity>
+                <View style={styles.switchContainer}>
+                    <Text style={styles.label}>Cutlery Availability</Text>
+                    <Switch
+                        trackColor={{ false: "#767577", true: "#81b0ff" }}
+                        value={cutleryAvail}
+                        onValueChange={setCutleryAvail} />
+                </View>
+
+                <View style={styles.timeContainer}>
+                    <Button title="Set Clear Time" onPress={() => setShowTimePicker(true)} />
+                    {showTimePicker && (
+                        <DateTimePicker
+                            value={clearTime}
+                            mode="time"
+                            is24Hour={true}
+                            display="default"
+                            onChange={handleTimeChange} />
+                    )}
+                </View>
+                <TouchableOpacity style={styles.button} onPress={AddListing}>
+                    <Text style={styles.text}>
+                        Create Listing
+                    </Text>
+                </TouchableOpacity>
             </View>
         </ScrollView>
     );
@@ -220,76 +273,63 @@ const styles = StyleSheet.create({
     },
     previewImage: {
         width: '100%',
-        height: 300,
-        marginVertical: 10,
+        height: 200,
+        resizeMode: 'cover',
+        marginBottom: 20,
     },
-    label: {
-        fontSize: 20,
-        marginBottom: 8,
-        fontWeight: 'bold',
-        color: '#00008b'
+    inputContainer: {
+        marginBottom: 10,
+        padding: 10
     },
     input: {
         height: 40,
         borderColor: 'gray',
         borderWidth: 1,
-        marginBottom: 12,
+        borderRadius: 5,
+        marginBottom: 20,
         paddingHorizontal: 10,
-        borderRadius: 20
+        backgroundColor: '#f5f5f5',
+        fontSize: 18,
+    },
+    timeContainer: {
+        marginBottom: 20,
     },
     switchContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 12,
+        justifyContent: 'space-between',
+        marginBottom: 20,
     },
-    timeContainer: {
-        marginBottom: 12,
-        borderRadius: 5,
-        width: 330,
-        alignSelf: 'center',
+    picButton: {
+        backgroundColor: '#001a4d',
+        padding: 10,
+        borderRadius: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 20,
     },
     button: {
-        backgroundColor: '#ff9900',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 20,
-        marginBottom: 20,
-        width: 330,
-        alignSelf: 'center',
-    }, 
-    text: {
-        color: '#fff', 
-        fontSize: 20,
-        textAlign: 'center',
-        fontWeight: 'bold'
-      },
-    title: {
-        fontSize: 32,
+        backgroundColor: '#001a4d',
+        padding: 10,
+        borderRadius: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    buttonText: {
+        color: 'white',
         fontWeight: 'bold',
-        color: '#fff',
+    },
+    text: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: 'white',
         textAlign: 'center',
         flex: 1,
     },
-    picButton: {
-        backgroundColor: '#00008b',
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        borderRadius: 20,
-        marginBottom: 20,
-        width: 150,
-        fontWeight: 'bold',
-        alignSelf: 'center',
-    },
-    buttonText: {
-        color: '#fff', 
-        fontSize: 16,
-        textAlign: 'center',
-        fontWeight: 'bold'
-    },
-    inputContainer: {
-        padding: 15,
-    }
 });
 
 export default CreateListings;

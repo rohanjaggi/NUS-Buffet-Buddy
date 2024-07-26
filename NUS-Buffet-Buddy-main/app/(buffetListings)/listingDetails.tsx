@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, Button, FlatList, ScrollView, Switch } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, Button, FlatList, ScrollView, Switch, TouchableOpacity, Linking } from 'react-native';
 import { ref, onValue, push, set, update } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 import { FIREBASE_RDB } from '../../firebase/firebase';
@@ -61,9 +61,14 @@ const ListingDetails = ({ route, navigation }) => {
         ListHeaderComponent={
           <>
             <View style={styles.topContainer}>
-              <Text style={styles.unbolded}>
-                <Text style={styles.listingDetails}>Location: </Text>{listingData.location}
-              </Text>
+              
+              <View style={styles.locationContainer}>
+                <Text style={styles.listingDetails}>Location: </Text>
+                <TouchableOpacity onPress={() => Linking.openURL(`https://nusmods.com/venues?q=${listingData.location}`)}>
+                  <Text style={styles.link}>{listingData.location}</Text>
+                </TouchableOpacity>
+              </View>
+              
               <Text style={styles.unbolded}>
                 <Text style={styles.listingDetails}>Clearing by: </Text>{formatDateTime(listingData.clearTime)}
               </Text>
@@ -235,6 +240,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#00008b'
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  link: {
+    fontSize: 20,
+    textDecorationLine: 'underline',
+    fontWeight: 'bold',
   },
 });
 

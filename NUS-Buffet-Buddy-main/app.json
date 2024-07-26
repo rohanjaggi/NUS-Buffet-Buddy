@@ -13,13 +13,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ivecookies.nusbuffetbuddy"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ivecookies.nusbuffetbuddy"
     },
     "web": {
       "bundler": "metro",
@@ -27,11 +29,22 @@
     },
     "plugins": [
       "expo-router",
-      ["expo-font",
+      [
+        "expo-font",
         {
-          "fonts": ["node_modules/@expo-google-fonts/inter/Inter_100Thin.ttf"]
+          "fonts": [
+            "node_modules/@expo-google-fonts/inter/Inter_100Thin.ttf"
+          ]
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "cde488f2-36e8-4ca2-9933-5daa02869392"
+      }
+    }
   }
 }
