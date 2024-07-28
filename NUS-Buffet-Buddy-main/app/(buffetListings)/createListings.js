@@ -16,10 +16,13 @@ const CreateListings = () => {
     const [description, setDescription] = useState('');
     const [location, setLocation] = useState('');
     const [clearTime, setClearTime] = useState(new Date());
+    const [activeTime, setActiveTime] = useState(new Date());
     const [showTimePicker, setShowTimePicker] = useState(false);
+    const [showActiveTimePicker, setShowActiveTimePicker] = useState(false);
     const [allergens, setAllergens] = useState('');
     const [cutleryAvail, setCutleryAvail] = useState(false);
     const [halalCert, setHalalCert] = useState(false);
+    const [isScheduled, setIsScheduled] = useState(false);
     const [imageURL, setImageURL] = useState('');
 
     const [userRole, setUserRole] = useState('');
@@ -31,9 +34,11 @@ const CreateListings = () => {
         setDescription('');
         setLocation('');
         setClearTime(new Date());
+        setActiveTime(new Date());
         setAllergens('');
         setCutleryAvail(false);
         setHalalCert(false);
+        setIsScheduled(false);
         setImageURL('');
     };
 
@@ -68,12 +73,12 @@ const CreateListings = () => {
     }, [route.params?.imageUrl]);
 
     // Function to send push notification
-    const sendPushNotification = async (expoPushToken) => {
+    const sendPushNotification = async (expoPushToken, location, foodAvail, clearTime) => {
         const message = {
             to: expoPushToken,
             sound: 'default',
-            title: 'New Buffet Listing!',
-            body: 'Check out the new buffet listing now!',
+            title: `New Buffet at ${location}!`,
+            body: `${foodAvail} available until ${new Date(clearTime).toLocaleTimeString()}`,
             data: { someData: 'goes here' },
         };
 
@@ -108,7 +113,7 @@ const CreateListings = () => {
             });
 
             // then send push notifications to all users
-            await Promise.all(expoPushTokens.map((token) => sendPushNotification(token)));
+            await Promise.all(expoPushTokens.map((token) => sendPushNotification(token, location, foodAvail, clearTime)));
         } catch (error) {
             console.error('Error fetching users or sending notifications:', error);
         }
@@ -117,6 +122,11 @@ const CreateListings = () => {
     const AddListing = async () => {
         if (userRole !== 'Organiser') {
             Alert.alert('Error', 'Only organisers can create a listing');
+            return;
+        }
+
+        if (isScheduled && activeTime > clearTime) {
+            Alert.alert('Error', 'Start time cannot be later than clear time');
             return;
         }
 
@@ -142,7 +152,8 @@ const CreateListings = () => {
                     userId: currentUser.uid,
                     userName,
                     imageURL,
-                    isActive: true
+                    isActive: true,
+                    activeTime: isScheduled ? activeTime.toISOString() : new Date().toISOString()
                 });
 
                 // Send push notifications to all users
@@ -160,10 +171,18 @@ const CreateListings = () => {
         }
     };
 
-    const handleTimeChange = (event, selectedTime) => {
-        const currentTime = selectedTime || clearTime;
-        setShowTimePicker(false);
-        setClearTime(currentTime);
+    const handleTimeChange = (event, selectedTime, type) => {
+        const currentTime = selectedTime || (type === 'clearTime' ? clearTime : activeTime);
+        if (type === 'clearTime') {
+            setShowTimePicker(false);
+            setClearTime(currentTime);
+            if (isScheduled && activeTime > currentTime) {
+                setActiveTime(currentTime);
+            }
+        } else if (type === 'activeTime') {
+            setShowActiveTimePicker(false);
+            setActiveTime(currentTime);
+        }
     };
 
     if (loading) {
@@ -177,6 +196,28 @@ const CreateListings = () => {
                 <Text style={styles.title}>Create a Listing.</Text>
             </View>
             <View style={styles.inputContainer}>
+                <View style={styles.switchContainer}>
+                    <Text style={styles.label}>Schedule Listing</Text>
+                    <Switch
+                        trackColor={{ false: "#767577", true: "#81b0ff" }}
+                        value={isScheduled}
+                        onValueChange={setIsScheduled} />
+                </View>
+
+                {isScheduled && (
+                    <View style={styles.timeContainer}>
+                        <Button title="Set Start Time" onPress={() => setShowActiveTimePicker(true)} />
+                        {showActiveTimePicker && (
+                            <DateTimePicker
+                                value={activeTime}
+                                mode="time"
+                                is24Hour={true}
+                                display="default"
+                                onChange={(event, selectedTime) => handleTimeChange(event, selectedTime, 'activeTime')} />
+                        )}
+                    </View>
+                )}
+
                 <TouchableOpacity style={styles.picButton} onPress={() => navigation.navigate('PhotoPicker')}>
                     <Text style={styles.buttonText}>
                         Add Picture
@@ -204,7 +245,7 @@ const CreateListings = () => {
                     style={styles.input}
                     value={location}
                     onChangeText={setLocation}
-                    placeholder="Where is the food Available?"
+                    placeholder="Where is the food available?"
                 />
 
                 <Text style={styles.label}>Allergens</Text>
@@ -239,9 +280,10 @@ const CreateListings = () => {
                             mode="time"
                             is24Hour={true}
                             display="default"
-                            onChange={handleTimeChange} />
+                            onChange={(event, selectedTime) => handleTimeChange(event, selectedTime, 'clearTime')} />
                     )}
                 </View>
+
                 <TouchableOpacity style={styles.button} onPress={AddListing}>
                     <Text style={styles.text}>
                         Create Listing
@@ -285,7 +327,7 @@ const styles = StyleSheet.create({
         height: 40,
         borderColor: 'gray',
         borderWidth: 1,
-        borderRadius: 5,
+        borderRadius: 10,
         marginBottom: 20,
         paddingHorizontal: 10,
         backgroundColor: '#f5f5f5',
@@ -303,25 +345,27 @@ const styles = StyleSheet.create({
     picButton: {
         backgroundColor: '#001a4d',
         padding: 10,
-        borderRadius: 0,
+        borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 20,
     },
     button: {
-        backgroundColor: '#001a4d',
+        backgroundColor: '#ff9900',
         padding: 10,
-        borderRadius: 0,
+        borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
     },
     buttonText: {
         color: 'white',
         fontWeight: 'bold',
+        fontSize: '16'
     },
     text: {
         color: 'white',
         fontWeight: 'bold',
+        fontSize: '18'
     },
     title: {
         fontSize: 24,
@@ -330,6 +374,10 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         flex: 1,
     },
+    label: {
+        fontWeight: 'bold',
+        fontSize: '18'
+    }
 });
 
 export default CreateListings;

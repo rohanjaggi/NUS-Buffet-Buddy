@@ -29,8 +29,11 @@ const BuffetListings = ({ navigation }) => {
   }, [searchText, halalFilter, cutleryFilter, timeFilter]);
 
   const filterListings = (listings) => {
+    const now = new Date();
     return listings.filter(item => (
-      item.isActive !== false && 
+      item.isActive !== false &&
+      new Date(item.activeTime) <= now &&
+      new Date(item.clearTime) > now &&
       (!searchText || 
         item.description.toLowerCase().includes(searchText.toLowerCase()) || 
         item.foodAvail.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -124,7 +127,7 @@ const BuffetListings = ({ navigation }) => {
             />
           </View>
           <View style={styles.switchContainer}>
-            <Text>Cutlery Availablility</Text>
+            <Text>Cutlery Availability</Text>
             <Switch
               trackColor={{ false: "#767577", true: "#81b0ff" }}
               thumbColor={cutleryFilter ? "#f5dd4b" : "#f4f3f4"}

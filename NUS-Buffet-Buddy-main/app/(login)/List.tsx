@@ -25,6 +25,7 @@ const List = ({ navigation }: RouterProps) => {
     const fetchUserName = async () => {
       try {
         const userDoc = await getDoc(doc(FIREBASE_DB, 'users', userId));
+        console.log(userDoc.data());
         setUserName(userDoc.data().name);
       } catch (error: any) {
         console.error('Error fetching username', error); //catch any errors

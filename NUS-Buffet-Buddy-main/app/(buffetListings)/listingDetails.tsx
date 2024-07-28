@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TextInput, Button, FlatList, ScrollView, Switch, TouchableOpacity, Linking } from 'react-native';
 import { ref, onValue, push, set, update } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
-import { FIREBASE_RDB } from '../../firebase/firebase';
+import { FIREBASE_DB, FIREBASE_RDB } from '../../firebase/firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 const ListingDetails = ({ route, navigation }) => {
   const { listingId } = route.params;
@@ -10,6 +11,7 @@ const ListingDetails = ({ route, navigation }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [isActive, setIsActive] = useState(true);
+  const [canToggleActive, setCanToggleActive] = useState(true);
   const currentUser = getAuth().currentUser;
 
   useEffect(() => {
@@ -18,9 +20,23 @@ const ListingDetails = ({ route, navigation }) => {
       const data = snapshot.val();
       setListingData(data);
       setComments(data.comments ? Object.entries(data.comments).map(([key, value]) => ({ id: key, ...value })) : []);
-      setIsActive(data.isActive !== undefined ? data.isActive : true);
+      checkActiveStatus(data);
     });
   }, [listingId]);
+
+  const checkActiveStatus = (data) => {
+    const now = new Date();
+    const clearDate = new Date(data.clearTime);
+    const activeDate = new Date(data.activeTime);
+    if (clearDate < now) {
+      setIsActive(false);
+      setCanToggleActive(false);
+      update(ref(FIREBASE_RDB, `foodListings/${listingId}`), { isActive: false });
+    } else {
+      setIsActive(data.isActive !== undefined ? data.isActive : true);
+      setCanToggleActive(true);
+    }
+  };
 
   const formatDateTime = (isoString) => {
     const date = new Date(isoString);
@@ -50,6 +66,9 @@ const ListingDetails = ({ route, navigation }) => {
   };
 
   const toggleActiveStatus = async () => {
+    if (!canToggleActive) {
+      return;
+    }
     const newStatus = !isActive;
     setIsActive(newStatus);
     await update(ref(FIREBASE_RDB, `foodListings/${listingId}`), { isActive: newStatus });
@@ -122,6 +141,7 @@ const ListingDetails = ({ route, navigation }) => {
                     trackColor={{ false: "#767577", true: "#81b0ff" }}
                     value={isActive}
                     onValueChange={toggleActiveStatus}
+                    disabled={!canToggleActive}
                   />
                 </View>
               )}
@@ -247,8 +267,12 @@ const styles = StyleSheet.create({
   },
   link: {
     fontSize: 20,
+    color: '#00008b',
     textDecorationLine: 'underline',
     fontWeight: 'bold',
+    backgroundColor: '#e6f2ff', 
+    padding: 0, 
+    borderRadius: 20, 
   },
 });
 
