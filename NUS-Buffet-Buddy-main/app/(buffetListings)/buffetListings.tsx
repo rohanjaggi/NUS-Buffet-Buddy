@@ -91,6 +91,20 @@ const BuffetListings = ({ navigation }) => {
                 <Text style={styles.listingTitle}>#{item.listingID} - {item.location}</Text>
               </View>
 
+              <View style={styles.picContainer}>
+                {item.imageURL ? (
+                  <Image
+                    source={{ uri: item.imageURL }}
+                    style={{ width: 400, height: 200, borderWidth: 2, borderColor: '#000' }}
+                  />
+                ) : (
+                  <Image
+                    source={require('../../assets/images/emoji5.png')}
+                    style={{ width: 200, height: 200, borderWidth: 2, borderColor: '#000' }}
+                  />
+                )}
+              </View>
+
               <View style={styles.listingDetails}>
                 <Text>
                   <Text style={{ fontWeight: 'bold' }}>Food Available: </Text>{item.foodAvail}
@@ -221,6 +235,11 @@ const styles = StyleSheet.create({
     padding: 16,
     fontSize: 16,
     fontWeight: 'bold'
+  },
+  picContainer: {
+    alignItems: 'center',
+    marginBottom: 10,
+    marginTop: 10
   },
   modalContent: {
     backgroundColor: 'white',
